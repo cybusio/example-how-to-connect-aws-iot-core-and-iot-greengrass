@@ -1,0 +1,72 @@
+description: >
+  Cybus Connectware to AWS IoT Greengrass
+
+metadata:
+  name: AWS IoT Greengrass Test
+  version: 1.0.0
+  icon: https://www.cybus.io/wp-content/uploads/2019/03/Cybus-logo-Claim-lang.svg
+  provider: cybus
+  homepage: https://www.cybus.io
+
+parameters:
+  Greengrass_Core_Endpoint_Address:
+    type: string
+    description: The endpoint to reach your AWS IoT Greengrass Core
+    default: <public-ip-or-name-of-a-greengrass-host>
+
+  awsGreengrassClientId:
+    type: string
+    default: TestDeviceEdge
+
+definitions:
+
+  # The root CA certificate as PEM format (the Greengrass Group's Certificate Authority)
+  caCert: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+
+  # The device certificate in PEM CRT format
+  clientCert: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+
+  # The device private key in PEM format
+  clientPrivateKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
+
+resources:
+
+  greengrassTestDeviceEdgeMqttConnection:
+    type: Cybus::Connection
+    properties:
+      protocol: Mqtt
+      connection:
+        host: !ref Greengrass_Core_Endpoint_Address
+        port: 8883
+        scheme: mqtts
+        clientId: !ref awsGreengrassClientId
+        mutualAuthentication: true
+        #trustAllCertificates: true
+        caCert: !ref caCert
+        clientCert: !ref clientCert
+        clientPrivateKey: !ref clientPrivateKey
+
+  sourceTargetMapping:
+    type: Cybus::Mapping
+    properties:
+      mappings:
+        - subscribe:
+            topic: !sub "${Cybus::MqttRoot}/test/#topic"
+          publish:
+            connection: !ref greengrassTestDeviceEdgeMqttConnection
+            topic: TestDeviceEdge/$topic
+          rules:
+            - transform:
+                expression: |
+                  (
+                    {
+                      "deviceId": "TestDeviceEdge",
+                      "payload": $
+                    }
+                  )

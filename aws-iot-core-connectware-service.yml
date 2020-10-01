@@ -1,0 +1,68 @@
+description: >
+  Cybus Connectware to AWS IoT Core
+
+metadata:
+  name: AWS IoT Core Test
+  version: 1.0.0
+  icon: https://www.cybus.io/wp-content/uploads/2019/03/Cybus-logo-Claim-lang.svg
+  provider: cybus
+  homepage: https://www.cybus.io
+
+parameters:
+  Aws_IoT_Endpoint_Address:
+    type: string
+    description: The ATS endpoint to reach your AWS account's AWS IoT Core
+    default: <your-aws-account-endpoint-id>-ats.iot.eu-central-1.amazonaws.com
+
+definitions:
+
+  # The root CA certificate as PEM format (AmazonRootCA1.pem)
+  caCert: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+
+  # The device certificate in PEM CRT format
+  clientCert: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+
+  # The device private key in PEM format
+  clientPrivateKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
+
+resources:
+
+  awsMqttConnection:
+    type: Cybus::Connection
+    properties:
+      protocol: Mqtt
+      connection:
+        host: !ref Aws_IoT_Endpoint_Address
+        port: 8883
+        scheme: mqtts
+        clientId: !sub "${Cybus::ServiceId}-awsMqttConnection"
+        mutualAuthentication: true
+        #trustAllCertificates: true
+        caCert: !ref caCert
+        clientCert: !ref clientCert
+        clientPrivateKey: !ref clientPrivateKey
+
+  sourceTargetMapping:
+    type: Cybus::Mapping
+    properties:
+      mappings:
+        - subscribe:
+            topic: !sub "${Cybus::MqttRoot}/test/#topic"
+          publish:
+            connection: !ref awsMqttConnection
+            topic: TestDevice/$topic
+          rules:
+            - transform:
+                expression: |
+                  (
+                    {
+                      "deviceId": "TestDevice",
+                      "payload": $
+                    }
+                  )
