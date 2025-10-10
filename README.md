@@ -1,4 +1,4 @@
-# Cybus Learn - AWS IoT
+# How to Integrate Connectware with AWS IoT Core and AWS IoT Greengrass
 
 This repository describes how to connect AWS IoT Core or AWS IoT Greengrass.
 
@@ -155,8 +155,8 @@ see the [AWS Iot Core Service Example](aws-iot-core-connectware-service.yml)
 
 After the respective certificates mentioned above are configured 
 there is nothing more to configure for working with the AWS IoT Hub via MQTT over TLS.
-You may then configure Endpoint and Mapping resources following the
-[Cybus resource documentation](https://docs.cybus.io/latest/user/resources/index.html).
+You may then configure Endpoint and Mapping resources following the Connectware 
+[resource documentation](https://docs.cybus.io/documentation/services/service-commissioning-files/resources).
 
 ### Connect to AWS IoT Greengrass Core
 
@@ -211,8 +211,8 @@ the client certificate data for the device associated with the Greengrass group,
 and the Device Name as the MQTT clientId.
 
 There is nothing more to configure for working with the AWS IoT Greengrass Core via MQTT over TLS.
-You may then configure Endpoint and Mapping resources following the
-[Cybus resource documentation](https://docs.cybus.io/latest/user/resources/index.html).
+You may then configure Endpoint and Mapping resources following the Connectware 
+[resource documentation](https://docs.cybus.io/documentation/services/service-commissioning-files/resources).
 
 ## Verify successful integration
 
@@ -250,4 +250,3 @@ with any kind of connected devices over nearly arbitrary communication protocols
 - [Greengrass Device Connection Workflow](https://docs.aws.amazon.com/greengrass/latest/developerguide/gg-sec.html#gg-sec-connection)
 - [Cybus Homepage](https://www.cybus.io/)
 - [Cybus Connectware documentation](https://docs.cybus.io)
-- [Cybus Learn Service Basics](https://learn.cybus.io/lessons/mqtt-basics/)
